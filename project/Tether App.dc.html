@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><style>body{margin:0;background:#e8e5e0;font-family:"Helvetica Neue",Helvetica,system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:#2a78d6}a:hover{color:#1b5aa8}</style></helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:18px;padding:34px 20px 50px;box-sizing:border-box">
+
+<div style="display:flex;align-items:center;gap:14px">
+<div style="display:flex;border:1px solid rgba(26,25,24,.2);border-radius:22px;overflow:hidden;background:#fbfaf8">
+<div onClick="{{ goPro }}" style="padding:9px 18px;font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer;background:{{ proBg }};color:{{ proFg }}">Photographer</div>
+<div onClick="{{ goGuest }}" style="padding:9px 18px;font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer;background:{{ guestBg }};color:{{ guestFg }}">Guest</div>
+</div>
+<div style="font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(26,25,24,.45);letter-spacing:.11em">{{ screenLabel }}</div>
+<div onClick="{{ reset }}" style="font:400 12px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.45);cursor:pointer;text-decoration:underline;text-underline-offset:3px">Reset</div>
+</div>
+
+<div style="width:390px;height:844px;border-radius:52px;background:#000;padding:9px;box-shadow:0 24px 70px rgba(0,0,0,.28);flex:none">
+<div style="width:100%;height:100%;border-radius:44px;overflow:hidden;background:{{ shellBg }};display:flex;flex-direction:column;position:relative">
+
+<div style="height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font:500 12.5px/1 'IBM Plex Mono',monospace;color:{{ ink }};flex:none;z-index:5"><span>9:41</span><span style="letter-spacing:.06em">{{ statusRight }}</span></div>
+
+<sc-if value="{{ isConnect }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;background:#0B0B0C;padding:16px 24px 0;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+<img src="assets/jn-logo.png" alt="Jessica Nona Photography" style="width:120px;align-self:center;filter:contrast(1.35);mix-blend-mode:screen;opacity:.92">
+<div style="border:1px solid rgba(242,240,236,.13);border-radius:14px;padding:16px 17px;background:#131315;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font:400 17px/1.2 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Canon EOS R5</span>
+<span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.75 0.15 145);display:block"></span><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:oklch(0.75 0.15 145);letter-spacing:.1em">LINKED</span></span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;font:400 10.5px/1.5 'IBM Plex Mono',monospace;color:rgba(242,240,236,.42);letter-spacing:.05em">
+<div>SERIAL<div style="color:#F2F0EC">0332 8871</div></div>
+<div>BATTERY<div style="color:#F2F0EC">84%</div></div>
+<div>CARD<div style="color:#F2F0EC">412 GB FREE</div></div>
+<div>API<div style="color:#F2F0EC">CCAPI v1.1</div></div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.13em">DELIVERY FOR THIS SESSION</div>
+<div onClick="{{ pickHotspot }}" style="border:1px solid {{ hotBorder }};background:{{ hotBg }};border-radius:12px;padding:14px 15px;display:flex;gap:13px;align-items:flex-start;cursor:pointer">
+<span style="width:16px;height:16px;border-radius:50%;border:1px solid {{ hotDotBorder }};flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;background:{{ hotDot }};display:block"></span></span>
+<span><span style="display:block;font:400 15px/1.3 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Local hotspot</span><span style="display:block;font:400 12.5px/1.45 'Helvetica Neue',Helvetica,sans-serif;color:rgba(242,240,236,.48);margin-top:4px">Guests join JN-STUDIO. Works with no internet.</span></span>
+</div>
+<div onClick="{{ pickCloud }}" style="border:1px solid {{ cloudBorder }};background:{{ cloudBg }};border-radius:12px;padding:14px 15px;display:flex;gap:13px;align-items:flex-start;cursor:pointer">
+<span style="width:16px;height:16px;border-radius:50%;border:1px solid {{ cloudDotBorder }};flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;background:{{ cloudDot }};display:block"></span></span>
+<span><span style="display:block;font:400 15px/1.3 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Cloud sync</span><span style="display:block;font:400 12.5px/1.45 'Helvetica Neue',Helvetica,sans-serif;color:rgba(242,240,236,.48);margin-top:4px">Queues on device, uploads when signal returns.</span></span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.13em">SESSION</div>
+<div style="border-bottom:1px solid rgba(242,240,236,.18);padding-bottom:10px;font:400 16px/1.2 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Nora &amp; Sam — 28 Aug</div>
+</div>
+</div>
+<div style="flex:none;background:#0B0B0C;padding:16px 24px 34px;display:flex;flex-direction:column;gap:12px">
+<div onClick="{{ startSession }}" style="background:#F2F0EC;color:#0B0B0C;border-radius:13px;height:52px;display:flex;align-items:center;justify-content:center;font:500 16px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">Start session</div>
+<div style="text-align:center;font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.32);letter-spacing:.08em">{{ readyLine }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isFeed }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:#0B0B0C">
+<div style="padding:0 22px 14px;display:flex;align-items:center;justify-content:space-between;flex:none;border-bottom:1px solid rgba(242,240,236,.09)">
+<div><div style="font:400 17px/1.2 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Nora &amp; Sam</div><div style="font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.09em;margin-top:6px">{{ countLabel }}</div></div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:6px;border:1px solid oklch(0.74 0.15 62 / .5);border-radius:20px;padding:5px 10px"><span style="width:5px;height:5px;border-radius:50%;background:oklch(0.74 0.15 62);display:block"></span><span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:oklch(0.8 0.13 62);letter-spacing:.1em">LIVE</span></div>
+<div onClick="{{ goQr }}" style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(242,240,236,.2);display:flex;align-items:center;justify-content:center;cursor:pointer">{{ qrGlyph }}</div>
+</div>
+</div>
+<div style="flex:1;overflow-y:auto;padding:14px 22px 0">
+<div onClick="{{ openHero }}" style="position:relative;border-radius:10px;overflow:hidden;height:250px;background:{{ heroBg }};cursor:pointer">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.045) 0 6px,rgba(0,0,0,.05) 6px 12px)"></div>
+<div style="position:absolute;left:11px;top:11px;background:rgba(11,11,12,.72);border-radius:6px;padding:5px 9px;font:500 9.5px/1 'IBM Plex Mono',monospace;color:#F2F0EC;letter-spacing:.08em">{{ heroAge }}</div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:10px 12px;background:linear-gradient(rgba(11,11,12,0),rgba(11,11,12,.8));font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.78);letter-spacing:.07em;display:flex;justify-content:space-between"><span>85mm · f/1.4 · 1/250 · ISO 800</span><span>{{ heroName }}</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0 9px"><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.12em">EARLIER</span><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.08em">ALL IN GALLERY</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding-bottom:20px">
+<sc-for list="{{ grid }}" as="p" hint-placeholder-count="12"><div onClick="{{ p.open }}" style="aspect-ratio:1;border-radius:4px;background:{{ p.bg }};position:relative;overflow:hidden;cursor:pointer"><div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 5px,rgba(0,0,0,.05) 5px 10px)"></div></div></sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#0B0B0C;overflow:hidden">
+<div style="padding:0 22px 14px;display:flex;align-items:center;justify-content:space-between;flex:none">
+<span onClick="{{ goFeed }}" style="font:400 14px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(242,240,236,.6);cursor:pointer">‹ Feed</span>
+<span style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.09em">{{ detailName }}</span>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 22px">
+<div style="aspect-ratio:4/5;border-radius:8px;background:{{ detailBg }};position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 7px,rgba(0,0,0,.05) 7px 14px)"></div>
+<div style="position:absolute;right:14px;bottom:14px;opacity:.5;font:300 12px/1 'Cormorant Garamond',serif;color:#F2F0EC;letter-spacing:.3em">JESSICA NONA</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:17px 2px 0;font:400 10px/1.55 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.04em">
+<div>85MM<div style="color:#F2F0EC">RF 1.2L</div></div>
+<div>APERTURE<div style="color:#F2F0EC">f/1.4</div></div>
+<div>SHUTTER<div style="color:#F2F0EC">1/250</div></div>
+<div>ISO<div style="color:#F2F0EC">800</div></div>
+</div>
+<div style="margin-top:18px;padding:13px 15px;border:1px solid rgba(242,240,236,.11);border-radius:11px;display:flex;justify-content:space-between;align-items:center">
+<span style="font:400 13px/1.3 'Helvetica Neue',Helvetica,sans-serif;color:{{ liveTextColor }}">{{ detailStatus }}</span>
+<span style="font:500 10px/1 'IBM Plex Mono',monospace;color:oklch(0.8 0.13 62);letter-spacing:.08em">{{ detailDownloads }}</span>
+</div>
+</div>
+<div style="flex:none;padding:18px 22px 34px;display:flex;flex-direction:column;gap:10px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div onClick="{{ togglePull }}" style="height:50px;border-radius:12px;border:1px solid {{ pullBorder }};display:flex;align-items:center;justify-content:center;font:400 15px/1 'Helvetica Neue',Helvetica,sans-serif;color:{{ pullColor }};cursor:pointer">{{ pullLabel }}</div>
+<div onClick="{{ toggleStar }}" style="height:50px;border-radius:12px;border:1px solid {{ starBorder }};background:{{ starBg }};display:flex;align-items:center;justify-content:center;font:400 15px/1 'Helvetica Neue',Helvetica,sans-serif;color:{{ starColor }};cursor:pointer">{{ starLabel }}</div>
+</div>
+<div onClick="{{ goQr }}" style="height:52px;border-radius:13px;background:#F2F0EC;color:#0B0B0C;display:flex;align-items:center;justify-content:center;gap:10px;font:500 16px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">{{ qrGlyphDark }} QR for this shot</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCull }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#0B0B0C;overflow:hidden">
+<div style="padding:0 22px;flex:none">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 17px/1.2 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Cull</span><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.45);letter-spacing:.09em">{{ cullLabel }}</span></div>
+<div style="height:2px;background:rgba(242,240,236,.13);margin-top:13px;border-radius:2px"><div style="width:{{ cullPct }};height:100%;background:#F2F0EC;border-radius:2px;transition:width .3s ease"></div></div>
+</div>
+<div style="flex:1;padding:22px 22px 0;display:flex;flex-direction:column;justify-content:center;position:relative">
+<div style="position:absolute;left:32px;right:32px;top:32px;bottom:32px;border-radius:8px;background:oklch(0.33 0.02 70);transform:rotate(-1.4deg)"></div>
+<div style="aspect-ratio:3/4;border-radius:8px;background:{{ cullBg }};position:relative;overflow:hidden;box-shadow:0 12px 34px rgba(0,0,0,.5)">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 7px,rgba(0,0,0,.05) 7px 14px)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:11px 13px;background:linear-gradient(rgba(11,11,12,0),rgba(11,11,12,.78));font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.75);letter-spacing:.07em">{{ cullName }} · f/2.0 · 1/400 · ISO 400</div>
+</div>
+</div>
+<div style="flex:none;padding:20px 22px 34px;display:flex;flex-direction:column;gap:13px">
+<div style="text-align:center;font:400 10.5px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.32);letter-spacing:.11em">{{ cullHint }}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div onClick="{{ cullPull }}" style="height:58px;border-radius:14px;border:1px solid oklch(0.62 0.16 25 / .55);color:oklch(0.72 0.14 25);display:flex;align-items:center;justify-content:center;font:400 16px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">Pull</div>
+<div onClick="{{ cullKeep }}" style="height:58px;border-radius:14px;background:#F2F0EC;color:#0B0B0C;display:flex;align-items:center;justify-content:center;font:500 16px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">Keep</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isQr }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ goFeed }}" style="flex:1;background:#0B0B0C;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:30px;cursor:pointer">
+<img src="assets/jn-logo.png" alt="Jessica Nona Photography" style="width:120px;filter:contrast(1.35);mix-blend-mode:screen;opacity:.9">
+<div style="text-align:center"><div style="font:300 34px/1.15 'Cormorant Garamond',serif;color:#F2F0EC">Nora &amp; Sam</div><div style="font:400 13px/1.5 'Helvetica Neue',Helvetica,sans-serif;color:rgba(242,240,236,.5);margin-top:9px">Scan for every photo from tonight</div></div>
+<div style="background:#F2F0EC;padding:16px;border-radius:12px">{{ qrLarge }}</div>
+<div style="text-align:center;display:flex;flex-direction:column;gap:6px"><div style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.45);letter-spacing:.12em">{{ qrModeLine }}</div><div style="font:500 12px/1.5 'IBM Plex Mono',monospace;color:#F2F0EC;letter-spacing:.08em">{{ qrJoinLine }}</div></div>
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;color:oklch(0.8 0.13 62);letter-spacing:.1em">{{ qrCountLine }}</div>
+<div style="font:400 11.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(242,240,236,.3);position:absolute;bottom:38px">Tap anywhere to exit</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSetup }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#0B0B0C;overflow:hidden">
+<div style="padding:0 22px 16px;flex:none;display:flex;gap:8px">
+<div onClick="{{ tabWm }}" style="padding:8px 14px;border-radius:20px;border:1px solid {{ wmTabBorder }};background:{{ wmTabBg }};color:{{ wmTabFg }};font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">Watermark</div>
+<div onClick="{{ tabStats }}" style="padding:8px 14px;border-radius:20px;border:1px solid {{ stTabBorder }};background:{{ stTabBg }};color:{{ stTabFg }};font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">Delivery</div>
+</div>
+<div style="flex:1;overflow-y:auto;padding:0 22px 30px">
+
+<sc-if value="{{ setupWm }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.13em">APPLY WATERMARK TO</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid rgba(242,240,236,.14);border-radius:10px;overflow:hidden">
+<div onClick="{{ wmPreview }}" style="padding:12px 0;text-align:center;background:{{ wmPrevBg }};color:{{ wmPrevFg }};font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">Previews</div>
+<div onClick="{{ wmAll }}" style="padding:12px 0;text-align:center;background:{{ wmAllBg }};color:{{ wmAllFg }};font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;border-left:1px solid rgba(242,240,236,.14);cursor:pointer">All</div>
+<div onClick="{{ wmNever }}" style="padding:12px 0;text-align:center;background:{{ wmNeverBg }};color:{{ wmNeverFg }};font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;border-left:1px solid rgba(242,240,236,.14);cursor:pointer">Never</div>
+</div>
+<div style="font:400 12px/1.55 'Helvetica Neue',Helvetica,sans-serif;color:rgba(242,240,236,.4)">{{ wmNote }}</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.13em">PREVIEW</div>
+<div style="border:1px solid rgba(242,240,236,.12);border-radius:10px;aspect-ratio:3/2;position:relative;overflow:hidden;background:oklch(0.42 0.02 58)">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.05) 0 7px,rgba(0,0,0,.05) 7px 14px)"></div>
+<div style="position:absolute;right:14px;bottom:12px;font:300 13px/1 'Cormorant Garamond',serif;color:#F2F0EC;letter-spacing:.26em;opacity:{{ wmOpacity }}">JESSICA NONA</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between"><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.13em">OPACITY</span><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:#F2F0EC">{{ wmPct }}</span></div>
+<div style="display:flex;gap:8px">
+<div onClick="{{ op25 }}" style="flex:1;height:36px;border-radius:9px;border:1px solid {{ op25b }};background:{{ op25g }};color:{{ op25f }};display:flex;align-items:center;justify-content:center;font:400 12px/1 'IBM Plex Mono',monospace;cursor:pointer">25%</div>
+<div onClick="{{ op45 }}" style="flex:1;height:36px;border-radius:9px;border:1px solid {{ op45b }};background:{{ op45g }};color:{{ op45f }};display:flex;align-items:center;justify-content:center;font:400 12px/1 'IBM Plex Mono',monospace;cursor:pointer">45%</div>
+<div onClick="{{ op70 }}" style="flex:1;height:36px;border-radius:9px;border:1px solid {{ op70b }};background:{{ op70g }};color:{{ op70f }};display:flex;align-items:center;justify-content:center;font:400 12px/1 'IBM Plex Mono',monospace;cursor:pointer">70%</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid rgba(242,240,236,.09)"><span style="font:400 14.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Guest download size</span><span style="font:400 12px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.5)">FULL 6000PX</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid rgba(242,240,236,.09)"><span style="font:400 14.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Colour preset</span><span style="font:400 12px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.5)">JN WARM 03</span></div>
+<div onClick="{{ toggleRaw }}" style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid rgba(242,240,236,.09);cursor:pointer"><span style="font:400 14.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Keep RAW on device</span><span style="width:42px;height:24px;border-radius:12px;background:{{ rawTrack }};display:flex;align-items:center;justify-content:{{ rawJustify }};padding:0 3px;transition:all .2s ease"><span style="width:18px;height:18px;border-radius:50%;background:{{ rawKnob }};display:block"></span></span></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ setupStats }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="border:1px solid rgba(242,240,236,.12);border-radius:12px;padding:16px"><div style="font:300 36px/1 'Cormorant Garamond',serif;color:#F2F0EC">318</div><div style="font:500 9.5px/1.5 'IBM Plex Mono',monospace;color:rgba(242,240,236,.42);letter-spacing:.1em;margin-top:8px">SCANS</div></div>
+<div style="border:1px solid rgba(242,240,236,.12);border-radius:12px;padding:16px"><div style="font:300 36px/1 'Cormorant Garamond',serif;color:#F2F0EC">1,284</div><div style="font:500 9.5px/1.5 'IBM Plex Mono',monospace;color:rgba(242,240,236,.42);letter-spacing:.1em;margin-top:8px">DOWNLOADS</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.4);letter-spacing:.13em">SCANS PER HOUR</div>
+<div style="display:flex;align-items:flex-end;gap:6px;height:104px">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="9"><div style="flex:1;background:rgba(242,240,236,.85);border-radius:2px 2px 0 0;height:{{ b.h }}"></div></sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font:400 9px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.32);letter-spacing:.08em"><span>15:00</span><span>19:00</span><span>23:00</span></div>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;padding:15px 0;border-top:1px solid rgba(242,240,236,.09)"><span style="font:400 14.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Most downloaded</span><span style="font:400 12px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.5)">IMG_4291 · 46</span></div>
+<div style="display:flex;justify-content:space-between;padding:15px 0;border-top:1px solid rgba(242,240,236,.09)"><span style="font:400 14.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Queued for cloud</span><span style="font:400 12px/1 'IBM Plex Mono',monospace;color:oklch(0.8 0.13 62)">{{ queuedLabel }}</span></div>
+<div style="display:flex;justify-content:space-between;padding:15px 0;border-top:1px solid rgba(242,240,236,.09)"><span style="font:400 14.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC">Devices on hotspot</span><span style="font:400 12px/1 'IBM Plex Mono',monospace;color:rgba(242,240,236,.5)">27</span></div>
+</div>
+<div onClick="{{ reset }}" style="height:50px;border-radius:12px;border:1px solid rgba(242,240,236,.22);display:flex;align-items:center;justify-content:center;font:400 15px/1 'Helvetica Neue',Helvetica,sans-serif;color:#F2F0EC;cursor:pointer">End session &amp; archive</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showTabs }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(242,240,236,.09);padding:13px 0 30px;background:#0B0B0C">
+<div onClick="{{ goFeed }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer"><span style="width:13px;height:13px;border-radius:2px;background:{{ tFeed }};display:block"></span><span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:{{ tFeed }};letter-spacing:.08em">FEED</span></div>
+<div onClick="{{ goCull }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer"><span style="width:13px;height:13px;border-radius:50%;border:1px solid {{ tCull }};display:block"></span><span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:{{ tCull }};letter-spacing:.08em">CULL</span></div>
+<div onClick="{{ goQr }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer"><span style="width:13px;height:13px;border:1px solid {{ tQr }};display:block"></span><span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:{{ tQr }};letter-spacing:.08em">SHARE</span></div>
+<div onClick="{{ goSetup }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer"><span style="width:13px;height:13px;border-radius:2px;border:1px solid {{ tSetup }};transform:rotate(45deg);display:block"></span><span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:{{ tSetup }};letter-spacing:.08em">SETUP</span></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLand }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;background:#F4F1EC;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:34px;text-align:center">
+<img src="assets/jn-logo.png" alt="Jessica Nona Photography" style="width:126px;filter:contrast(1.35) invert(1);mix-blend-mode:multiply;opacity:.9">
+<div style="width:32px;height:1px;background:rgba(26,25,24,.22)"></div>
+<div><div style="font:300 38px/1.15 'Cormorant Garamond',serif;color:#1A1918">Nora &amp; Sam</div><div style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(26,25,24,.45);letter-spacing:.14em;margin-top:14px">28 AUGUST 2026</div></div>
+<div style="font:400 14px/1.65 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.6);max-width:250px">{{ landBlurb }}</div>
+</div>
+<div style="flex:none;background:#F4F1EC;padding:0 28px 38px;display:flex;flex-direction:column;gap:14px">
+<div onClick="{{ goGallery }}" style="height:54px;border-radius:13px;background:#1A1918;color:#F4F1EC;display:flex;align-items:center;justify-content:center;font:500 16px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">Enter the gallery</div>
+<div onClick="{{ goFind }}" style="text-align:center;font:400 14px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.5);text-decoration:underline;text-underline-offset:4px;cursor:pointer">Find my photos</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isGallery }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#F4F1EC;overflow:hidden;position:relative">
+<div style="flex:none;padding:0 22px 14px;border-bottom:1px solid rgba(26,25,24,.1)">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:300 25px/1.1 'Cormorant Garamond',serif;color:#1A1918">Nora &amp; Sam</span><span style="font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(26,25,24,.45);letter-spacing:.1em">{{ guestCount }}</span></div>
+<div style="display:flex;gap:8px;margin-top:14px">
+<div onClick="{{ goFind }}" style="border:1px solid rgba(26,25,24,.9);border-radius:20px;padding:8px 14px;font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:#1A1918;cursor:pointer">Find my photos</div>
+<div style="border:1px solid rgba(26,25,24,.16);border-radius:20px;padding:8px 14px;font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.55)">Ceremony</div>
+<div style="border:1px solid rgba(26,25,24,.16);border-radius:20px;padding:8px 14px;font:400 12.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.55)">Toasts</div>
+</div>
+</div>
+<div style="flex:1;overflow-y:auto;padding:14px 22px 100px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+<sc-for list="{{ gallery }}" as="p" hint-placeholder-count="10"><div onClick="{{ p.pick }}" style="aspect-ratio:{{ p.ratio }};border-radius:5px;background:{{ p.bg }};position:relative;overflow:hidden;cursor:pointer;box-shadow:{{ p.ring }}">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.28) 0 6px,rgba(0,0,0,.03) 6px 12px)"></div>
+<div style="position:absolute;right:8px;top:8px;width:19px;height:19px;border-radius:50%;background:{{ p.dot }};border:1px solid rgba(255,255,255,.75)"></div>
+<div onClick="{{ p.open }}" style="position:absolute;left:8px;bottom:8px;padding:4px 8px;border-radius:6px;background:rgba(251,249,246,.85);font:400 9.5px/1 'IBM Plex Mono',monospace;color:#1A1918;letter-spacing:.05em">OPEN</div>
+</div></sc-for>
+</div>
+</div>
+<div onClick="{{ download }}" style="position:absolute;left:16px;right:16px;bottom:26px;height:56px;border-radius:15px;background:#1A1918;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 20px;box-shadow:0 10px 28px rgba(0,0,0,.22);cursor:pointer">
+<span style="font:400 14px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(244,241,236,.72)">{{ selLabel }}</span>
+<span style="background:#F4F1EC;color:#1A1918;border-radius:11px;padding:12px 18px;font:500 14px/1 'Helvetica Neue',Helvetica,sans-serif">{{ dlLabel }}</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isFind }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;background:#F4F1EC;display:flex;flex-direction:column">
+<div style="padding:0 22px;flex:none"><span onClick="{{ goGallery }}" style="font:400 14px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.5);cursor:pointer">‹ Gallery</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:20px 34px;text-align:center">
+<div style="width:168px;height:168px;border-radius:50%;background:oklch(0.86 0.015 70);position:relative;overflow:hidden;border:1px solid rgba(26,25,24,.12)">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.35) 0 7px,rgba(0,0,0,.03) 7px 14px)"></div>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 9.5px/1 'IBM Plex Mono',monospace;color:rgba(26,25,24,.45);letter-spacing:.1em">{{ findGlyph }}</div>
+</div>
+<div><div style="font:300 30px/1.2 'Cormorant Garamond',serif;color:#1A1918">{{ findTitle }}</div><div style="font:400 14px/1.65 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.58);margin-top:11px;max-width:250px">{{ findBody }}</div></div>
+<div style="border-top:1px solid rgba(26,25,24,.12);padding-top:18px;font:400 11.5px/1.6 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.45);max-width:262px">Matching happens on your phone. The selfie is never uploaded and is deleted when you leave.</div>
+</div>
+<div style="flex:none;padding:0 28px 38px;display:flex;flex-direction:column;gap:12px">
+<div onClick="{{ findNext }}" style="height:54px;border-radius:13px;background:#1A1918;color:#F4F1EC;display:flex;align-items:center;justify-content:center;font:500 16px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">{{ findCta }}</div>
+<div onClick="{{ goGallery }}" style="text-align:center;font:400 13.5px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.45);cursor:pointer">Browse everything instead</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPhoto }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;background:#F4F1EC;display:flex;flex-direction:column">
+<div style="padding:0 22px 14px;display:flex;justify-content:space-between;align-items:center;flex:none"><span onClick="{{ goGallery }}" style="font:400 14px/1 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.5);cursor:pointer">‹ Gallery</span><span style="font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(26,25,24,.42);letter-spacing:.1em">{{ photoIndex }}</span></div>
+<div style="flex:1;padding:0 22px;display:flex;flex-direction:column;justify-content:center;gap:18px">
+<div style="aspect-ratio:4/5;border-radius:6px;background:{{ photoBg }};position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(112deg,rgba(255,255,255,.32) 0 7px,rgba(0,0,0,.03) 7px 14px)"></div>
+<div style="position:absolute;right:14px;bottom:14px;font:300 13px/1 'Cormorant Garamond',serif;color:rgba(26,25,24,.5);letter-spacing:.3em;opacity:{{ wmOpacity }}">JESSICA NONA</div>
+</div>
+<div style="display:flex;justify-content:space-between;font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(26,25,24,.42);letter-spacing:.07em"><span>17:22 · CEREMONY</span><span>6000 × 4000 · 24 MP</span></div>
+</div>
+<div style="flex:none;padding:20px 22px 34px;display:flex;flex-direction:column;gap:11px">
+<div onClick="{{ downloadOne }}" style="height:54px;border-radius:13px;background:{{ oneBg }};color:{{ oneFg }};display:flex;align-items:center;justify-content:center;font:500 16px/1 'Helvetica Neue',Helvetica,sans-serif;cursor:pointer">{{ oneLabel }}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+<div onClick="{{ toggleFav }}" style="height:48px;border-radius:12px;border:1px solid rgba(26,25,24,.2);background:{{ favBg }};display:flex;align-items:center;justify-content:center;font:400 14px/1 'Helvetica Neue',Helvetica,sans-serif;color:{{ favFg }};cursor:pointer">{{ favLabel }}</div>
+<div style="height:48px;border-radius:12px;border:1px solid rgba(26,25,24,.2);display:flex;align-items:center;justify-content:center;font:400 14px/1 'Helvetica Neue',Helvetica,sans-serif;color:#1A1918">Share</div>
+</div>
+<div style="text-align:center;font:400 11px/1.5 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.42)">{{ photoNote }}</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:18px;right:18px;bottom:{{ toastBottom }};background:#1A1918;border-radius:13px;padding:15px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.3);z-index:20">
+<span style="font:400 13.5px/1.4 'Helvetica Neue',Helvetica,sans-serif;color:#F4F1EC">{{ toastText }}</span>
+<span style="font:500 10px/1 'IBM Plex Mono',monospace;color:oklch(0.8 0.13 145);letter-spacing:.1em">{{ toastTag }}</span>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+<div style="font:400 11.5px/1.6 'Helvetica Neue',Helvetica,sans-serif;color:rgba(26,25,24,.45);max-width:390px;text-align:center">{{ hint }}</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900,&quot;height&quot;:1050}}">class Component extends DCLogic {
+  state = {
+    screen: 'connect', mode: 'hotspot', live: false, count: 342, tick: 0,
+    detail: null, pulled: [], starred: [], cull: 14, setupTab: 'wm',
+    wm: 'Previews', op: 45, raw: true,
+    sel: [], find: 0, photo: null, fav: false, got: false, toast: null
+  };
+
+  tone(l, h, light) { return `oklch(${l} ${light ? 0.018 : 0.02} ${h})`; }
+  seq(n, seed, l0, l1, hues, light) {
+    const out = []; let s = seed;
+    for (let i = 0; i < n; i++) {
+      s = (s * 1103515245 + 12345) % 2147483648;
+      const r = s / 2147483648;
+      out.push({ i, bg: this.tone((l0 + r * (l1 - l0)).toFixed(3), hues[i % hues.length], light) });
+    }
+    return out;
+  }
+  qr(px, fg, bg) {
+    const N = 25, cell = px / N, cells = [];
+    let s = 987654321;
+    const ring = (r, c, r0, c0) => {
+      const dr = r - r0, dc = c - c0;
+      return dr === 0 || dr === 6 || dc === 0 || dc === 6 || (dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4);
+    };
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      s = (s * 1103515245 + 12345) % 2147483648;
+      let on;
+      if (r < 7 && c < 7) on = ring(r, c, 0, 0);
+      else if (r < 7 && c >= N - 7) on = ring(r, c, 0, N - 7);
+      else if (r >= N - 7 && c < 7) on = ring(r, c, N - 7, 0);
+      else if ((r < 8 && c < 8) || (r < 8 && c >= N - 8) || (r >= N - 8 && c < 8)) on = false;
+      else on = s / 2147483648 > 0.48;
+      cells.push(React.createElement('div', { key: r + '-' + c, style: { background: on ? fg : bg } }));
+    }
+    return React.createElement('div', { style: { display: 'grid', gridTemplateColumns: `repeat(${N},${cell}px)`, gridTemplateRows: `repeat(${N},${cell}px)`, width: px, height: px } }, cells);
+  }
+  glyph(color) {
+    return React.createElement('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(3,4px)', gridTemplateRows: 'repeat(3,4px)', gap: '2px' } },
+      [1, 1, 1, 1, 0, 1, 1, 1, 0].map((v, i) => React.createElement('div', { key: i, style: { background: v ? color : 'transparent', borderRadius: 1 } })));
+  }
+  toast(text, tag) {
+    clearTimeout(this._toast);
+    this.setState({ toast: { text, tag } });
+    this._toast = setTimeout(() => this.setState({ toast: null }), 2600);
+  }
+
+  componentDidMount() {
+    this._t = setInterval(() => {
+      if (this.state.live) this.setState(s => ({ count: s.count + 1, tick: s.tick + 1 }));
+    }, 3800);
+  }
+  componentWillUnmount() { clearInterval(this._t); clearTimeout(this._toast); }
+
+  renderVals() {
+    const st = this.state, S = st.screen;
+    const go = s => () => this.setState({ screen: s });
+    const warm = [42, 58, 70, 86, 250];
+    const dark = !(S === 'land' || S === 'gallery' || S === 'find' || S === 'photo');
+    const pro = ['connect', 'feed', 'detail', 'cull', 'qr', 'setup'].indexOf(S) >= 0;
+    const grid = this.seq(15, 13579, 0.3, 0.5, warm).map((p, i) => ({
+      bg: p.bg, open: () => this.setState({ screen: 'detail', detail: i })
+    }));
+    const gsrc = this.seq(10, 24680, 0.78, 0.89, [42, 62, 78, 240], true);
+    const gallery = gsrc.map((p, i) => {
+      const on = st.sel.indexOf(i) >= 0;
+      return {
+        bg: p.bg, ratio: i % 3 === 1 ? '3/4' : '1',
+        ring: on ? '0 0 0 2px #1A1918' : '0 0 0 0 rgba(0,0,0,0)',
+        dot: on ? '#1A1918' : 'rgba(255,255,255,.35)',
+        pick: () => this.setState(s => ({ sel: s.sel.indexOf(i) >= 0 ? s.sel.filter(x => x !== i) : s.sel.concat(i) })),
+        open: e => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ screen: 'photo', photo: i }); }
+      };
+    });
+    const n = st.sel.length;
+    const finds = [
+      { g: 'CAMERA', title: 'Find your photos', body: 'Take one selfie and we will pull every shot you appear in.', cta: 'Take a selfie' },
+      { g: 'MATCHING', title: 'Matching…', body: 'Comparing against ' + st.count + ' photos, on this device.', cta: 'Matching…' },
+      { g: '19 FOUND', title: '19 photos of you', body: 'Found across the ceremony and the toasts. Download them all at once.', cta: 'See my 19 photos' }
+    ][st.find];
+    const dIdx = st.detail == null ? 0 : st.detail;
+    const isPulled = st.pulled.indexOf(dIdx) >= 0;
+    const isStar = st.starred.indexOf(dIdx) >= 0;
+    const heroHues = [58, 44, 70, 250, 86];
+    const wmOp = st.wm === 'Never' ? 0 : (st.op / 100).toFixed(2);
+    const seg = active => ({ bg: active ? '#F2F0EC' : 'transparent', fg: active ? '#0B0B0C' : 'rgba(242,240,236,.6)' });
+    const chip = active => ({
+      b: active ? 'rgba(242,240,236,.9)' : 'rgba(242,240,236,.16)',
+      g: active ? 'rgba(242,240,236,.1)' : 'transparent',
+      f: active ? '#F2F0EC' : 'rgba(242,240,236,.55)'
+    });
+    const o25 = chip(st.op === 25), o45 = chip(st.op === 45), o70 = chip(st.op === 70);
+    const radio = on => ({
+      border: on ? 'rgba(242,240,236,.85)' : 'rgba(242,240,236,.13)',
+      bg: on ? 'rgba(242,240,236,.06)' : 'transparent',
+      dotBorder: on ? '#F2F0EC' : 'rgba(242,240,236,.3)',
+      dot: on ? '#F2F0EC' : 'transparent'
+    });
+    const hot = radio(st.mode === 'hotspot'), cloud = radio(st.mode === 'cloud');
+    const tab = k => (S === k ? '#F2F0EC' : 'rgba(242,240,236,.45)');
+    const hints = {
+      connect: 'Pick a delivery mode, then start the session — photos begin arriving on their own.',
+      feed: 'Tap the hero or any thumbnail to inspect it. The QR button hands the gallery to guests.',
+      detail: 'Pull removes a frame from the guest gallery immediately.',
+      cull: 'Keep or pull to advance. Progress is shared with the feed.',
+      qr: 'This is the screen guests see. Tap anywhere to go back.',
+      setup: 'Watermark changes here show up on the guest photo screen.',
+      land: 'What a guest sees after scanning.',
+      gallery: 'Tap a photo to select it, or OPEN to view it full size.',
+      find: 'Three states: prompt, matching, result.',
+      photo: 'Watermark opacity here follows the photographer’s setting.'
+    };
+
+    return {
+      goPro: () => this.setState({ screen: 'connect' }),
+      goGuest: () => this.setState({ screen: 'land' }),
+      reset: () => this.setState({ screen: 'connect', live: false, count: 342, sel: [], find: 0, pulled: [], starred: [], cull: 14, got: false, fav: false, toast: null }),
+      proBg: pro ? '#1A1918' : 'transparent', proFg: pro ? '#F4F1EC' : 'rgba(26,25,24,.6)',
+      guestBg: pro ? 'transparent' : '#1A1918', guestFg: pro ? 'rgba(26,25,24,.6)' : '#F4F1EC',
+      screenLabel: S.toUpperCase(),
+      hint: hints[S],
+      shellBg: dark ? '#0B0B0C' : '#F4F1EC',
+      ink: dark ? '#F2F0EC' : '#1A1918',
+      statusRight: dark ? (st.live ? 'JN-STUDIO · 84%' : 'NO SERVICE · 84%') : 'JN-STUDIO',
+
+      isConnect: S === 'connect', isFeed: S === 'feed', isDetail: S === 'detail',
+      isCull: S === 'cull', isQr: S === 'qr', isSetup: S === 'setup',
+      isLand: S === 'land', isGallery: S === 'gallery', isFind: S === 'find', isPhoto: S === 'photo',
+      showTabs: ['feed', 'detail', 'cull', 'setup'].indexOf(S) >= 0,
+
+      pickHotspot: () => this.setState({ mode: 'hotspot' }),
+      pickCloud: () => this.setState({ mode: 'cloud' }),
+      hotBorder: hot.border, hotBg: hot.bg, hotDotBorder: hot.dotBorder, hotDot: hot.dot,
+      cloudBorder: cloud.border, cloudBg: cloud.bg, cloudDotBorder: cloud.dotBorder, cloudDot: cloud.dot,
+      readyLine: st.mode === 'hotspot' ? 'OFFLINE READY · 0 QUEUED' : 'CLOUD · UPLOADS WHEN SIGNAL RETURNS',
+      startSession: () => { this.setState({ screen: 'feed', live: true }); this.toast('Tethered. Shots will appear as you take them.', 'LIVE'); },
+
+      countLabel: st.count.toLocaleString() + ' SHOTS · ' + (st.mode === 'hotspot' ? 'HOTSPOT' : 'CLOUD'),
+      heroBg: this.tone(0.44, heroHues[st.tick % heroHues.length]),
+      heroAge: st.tick % 2 === 0 ? 'JUST NOW' : '2 SEC AGO',
+      heroName: 'IMG_' + (4129 + st.count),
+      openHero: () => this.setState({ screen: 'detail', detail: 0 }),
+      grid,
+      goFeed: go('feed'), goCull: go('cull'), goQr: go('qr'), goSetup: go('setup'),
+      goGallery: go('gallery'), goFind: go('find'),
+      tFeed: tab('feed'), tCull: tab('cull'), tQr: tab('qr'), tSetup: tab('setup'),
+
+      detailName: 'IMG_' + (4471 - dIdx) + ' · ' + (st.count - dIdx) + ' / ' + st.count,
+      detailBg: this.tone(0.42, warm[dIdx % warm.length]),
+      detailStatus: isPulled ? 'Pulled from guest gallery' : 'Live in guest gallery',
+      liveTextColor: isPulled ? 'oklch(0.72 0.14 25)' : 'rgba(242,240,236,.7)',
+      detailDownloads: isPulled ? 'HIDDEN' : '12 DOWNLOADS',
+      pullLabel: isPulled ? 'Restore' : 'Pull from gallery',
+      pullBorder: isPulled ? 'oklch(0.62 0.16 25 / .55)' : 'rgba(242,240,236,.2)',
+      pullColor: isPulled ? 'oklch(0.72 0.14 25)' : 'rgba(242,240,236,.85)',
+      togglePull: () => {
+        const on = this.state.pulled.indexOf(dIdx) >= 0;
+        this.setState(s => ({ pulled: on ? s.pulled.filter(x => x !== dIdx) : s.pulled.concat(dIdx) }));
+        this.toast(on ? 'Back in the guest gallery.' : 'Pulled. Guests can no longer see it.', on ? 'LIVE' : 'HIDDEN');
+      },
+      starLabel: isStar ? 'Starred' : 'Star',
+      starBorder: isStar ? 'rgba(242,240,236,.85)' : 'rgba(242,240,236,.2)',
+      starBg: isStar ? 'rgba(242,240,236,.1)' : 'transparent',
+      starColor: isStar ? '#F2F0EC' : 'rgba(242,240,236,.85)',
+      toggleStar: () => this.setState(s => ({ starred: s.starred.indexOf(dIdx) >= 0 ? s.starred.filter(x => x !== dIdx) : s.starred.concat(dIdx) })),
+
+      cullLabel: st.cull + ' / 128 REVIEWED',
+      cullPct: Math.round(st.cull / 128 * 100) + '%',
+      cullBg: this.tone(0.46, warm[st.cull % warm.length]),
+      cullName: 'IMG_' + (4342 + st.cull),
+      cullHint: 'SWIPE LEFT TO PULL · RIGHT TO KEEP',
+      cullKeep: () => this.setState(s => ({ cull: Math.min(128, s.cull + 1) })),
+      cullPull: () => { this.setState(s => ({ cull: Math.min(128, s.cull + 1) })); this.toast('Pulled from the guest gallery.', 'HIDDEN'); },
+
+      qrLarge: this.qr(190, '#0B0B0C', '#F2F0EC'),
+      qrGlyph: this.glyph('#F2F0EC'), qrGlyphDark: this.glyph('#0B0B0C'),
+      qrModeLine: st.mode === 'hotspot' ? 'NO INTERNET NEEDED' : 'LINK STAYS LIVE AFTER TONIGHT',
+      qrJoinLine: st.mode === 'hotspot' ? 'JOIN WI-FI · JN-STUDIO' : 'JN.PHOTO/NORA-SAM',
+      qrCountLine: st.count.toLocaleString() + ' PHOTOS · UPDATING LIVE',
+
+      tabWm: () => this.setState({ setupTab: 'wm' }), tabStats: () => this.setState({ setupTab: 'stats' }),
+      setupWm: st.setupTab === 'wm', setupStats: st.setupTab === 'stats',
+      wmTabBorder: st.setupTab === 'wm' ? 'rgba(242,240,236,.9)' : 'rgba(242,240,236,.16)',
+      wmTabBg: st.setupTab === 'wm' ? 'rgba(242,240,236,.1)' : 'transparent',
+      wmTabFg: st.setupTab === 'wm' ? '#F2F0EC' : 'rgba(242,240,236,.55)',
+      stTabBorder: st.setupTab === 'stats' ? 'rgba(242,240,236,.9)' : 'rgba(242,240,236,.16)',
+      stTabBg: st.setupTab === 'stats' ? 'rgba(242,240,236,.1)' : 'transparent',
+      stTabFg: st.setupTab === 'stats' ? '#F2F0EC' : 'rgba(242,240,236,.55)',
+      wmPreview: () => this.setState({ wm: 'Previews' }), wmAll: () => this.setState({ wm: 'All' }), wmNever: () => this.setState({ wm: 'Never' }),
+      wmPrevBg: seg(st.wm === 'Previews').bg, wmPrevFg: seg(st.wm === 'Previews').fg,
+      wmAllBg: seg(st.wm === 'All').bg, wmAllFg: seg(st.wm === 'All').fg,
+      wmNeverBg: seg(st.wm === 'Never').bg, wmNeverFg: seg(st.wm === 'Never').fg,
+      wmNote: st.wm === 'Previews' ? 'Guests see the mark while browsing. Downloads are clean files.'
+        : st.wm === 'All' ? 'The mark is burned into downloads too. Guests cannot get a clean file.'
+        : 'No mark anywhere. Nothing identifies the images as yours.',
+      wmOpacity: wmOp,
+      wmPct: st.wm === 'Never' ? 'OFF' : st.op + '%',
+      op25: () => this.setState({ op: 25 }), op45: () => this.setState({ op: 45 }), op70: () => this.setState({ op: 70 }),
+      op25b: o25.b, op25g: o25.g, op25f: o25.f,
+      op45b: o45.b, op45g: o45.g, op45f: o45.f,
+      op70b: o70.b, op70g: o70.g, op70f: o70.f,
+      toggleRaw: () => this.setState(s => ({ raw: !s.raw })),
+      rawTrack: st.raw ? '#F2F0EC' : 'rgba(242,240,236,.2)',
+      rawJustify: st.raw ? 'flex-end' : 'flex-start',
+      rawKnob: st.raw ? '#0B0B0C' : 'rgba(242,240,236,.6)',
+      bars: [28, 44, 61, 96, 78, 52, 66, 34, 22].map(h => ({ h: h + '%' })),
+      queuedLabel: st.mode === 'hotspot' ? st.count.toLocaleString() + ' WAITING' : 'NONE',
+
+      landBlurb: st.count.toLocaleString() + ' photos so far, arriving as they are taken. Download anything you like at full resolution.',
+      guestCount: st.count.toLocaleString() + ' PHOTOS',
+      gallery,
+      selLabel: n === 0 ? 'Select photos to download' : n + (n === 1 ? ' photo selected' : ' photos selected'),
+      dlLabel: st.got ? 'Saved' : 'Download',
+      download: () => { if (n === 0) { this.toast('Tap photos to select them first.', 'NOTHING PICKED'); return; } this.setState({ got: true }); this.toast(n + (n === 1 ? ' photo saved' : ' photos saved') + ' at full resolution.', 'DONE'); },
+
+      findGlyph: finds.g, findTitle: finds.title, findBody: finds.body, findCta: finds.cta,
+      findNext: () => { if (st.find === 2) { this.setState({ screen: 'gallery', find: 0 }); return; } this.setState(s => ({ find: s.find + 1 })); },
+
+      photoIndex: (st.photo == null ? 0 : st.photo + 1) + ' / ' + st.count,
+      photoBg: this.tone(0.82, [42, 62, 78, 240][(st.photo || 0) % 4], true),
+      oneLabel: st.got ? 'Saved to your photos' : 'Download full resolution',
+      oneBg: st.got ? 'transparent' : '#1A1918',
+      oneFg: st.got ? '#1A1918' : '#F4F1EC',
+      downloadOne: () => { this.setState({ got: true }); this.toast('Saved at 6000 × 4000.', 'DONE'); },
+      toggleFav: () => this.setState(s => ({ fav: !s.fav })),
+      favLabel: st.fav ? 'Favourited' : 'Favourite',
+      favBg: st.fav ? '#1A1918' : 'transparent',
+      favFg: st.fav ? '#F4F1EC' : '#1A1918',
+      photoNote: st.wm === 'Never' ? 'No watermark on this gallery.' : st.wm === 'All' ? 'The mark stays on your download.' : 'Preview is watermarked. Your download is clean.',
+
+      toastBottom: S === 'photo' ? '210px' : S === 'detail' ? '196px' : S === 'cull' ? '190px' : S === 'gallery' ? '100px' : '120px',
+      toastOn: !!st.toast,
+      toastText: st.toast ? st.toast.text : '',
+      toastTag: st.toast ? st.toast.tag : ''
+    };
+  }
+}</script>
+</body>
+</html>
