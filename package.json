@@ -1,0 +1,23 @@
+{
+  "name": "tether",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,photog,guest -c blue,magenta,green \"npm run dev -w apps/server\" \"npm run dev -w apps/photographer\" \"npm run dev -w apps/guest\"",
+    "dev:server": "npm run dev -w apps/server",
+    "dev:photographer": "npm run dev -w apps/photographer",
+    "dev:guest": "npm run dev -w apps/guest",
+    "simulate-camera": "node apps/server/scripts/simulate-camera.js",
+    "build": "npm run build -w apps/photographer && npm run build -w apps/guest"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
