@@ -2,8 +2,10 @@ import { hub } from "./ws.js";
 import { WS_EVENTS } from "@tether/shared";
 
 // Canon Camera Control API (CCAPI) endpoints, per Canon's published spec.
-// The R5 must have current firmware and CCAPI activated once through
-// Canon's EOS Utility / developer-registration desktop tool — see
+// Works with any CCAPI-supported EOS body (R5, R6/R6 Mark II, R7, R3, 1D X
+// Mark III, and others — see Canon's developer community for the current
+// list). The camera must have current firmware and CCAPI activated once
+// through Canon's EOS Utility / developer-registration desktop tool — see
 // chats/chat1.md's "how can I make this app live" answer. This module can't
 // be exercised against real hardware in this environment; verify the paths
 // below against the CCAPI version your camera actually reports before
@@ -86,7 +88,7 @@ class CcapiMonitor {
         const card = storage?.storagelist?.[0];
         info = {
           serial: device?.serialnumber ?? null,
-          productName: device?.productname ?? "Canon EOS R5",
+          productName: device?.productname ?? "Canon Camera",
           firmware: device?.firmwareversion ?? null,
           batteryLevel: battery?.level ?? null,
           cardFreeGb: card?.spacesize != null ? Math.round(card.spacesize / 1024) : null,

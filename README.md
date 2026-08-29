@@ -72,7 +72,7 @@ need things this environment doesn't have:
 |---|---|
 | FTP ingest, image pipeline (thumbnails/previews/watermarking), SQLite storage, WebSocket live updates, QR generation, cloud-sync queue, guest downloads | **Real, tested end-to-end** (see "Try it" below) |
 | On-device face matching (`face-api.js`) | **Real** — runs in-browser on both apps, models vendored in `public/models`. Untested with an actual face since this environment has no camera; the matching math and integration are exercised by the code, not by a live selfie. |
-| Canon CCAPI client (`apps/server/src/ccapi.js`) | Implemented to Canon's published spec, but **never exercised against a real R5** — this environment has no camera on a LAN to test against. Verify the endpoint paths against your camera's reported CCAPI version before relying on it. |
+| Canon CCAPI client (`apps/server/src/ccapi.js`) | Implemented to Canon's published spec, but **never exercised against a real camera** — this environment has no camera on a LAN to test against. Verify the endpoint paths against your camera's reported CCAPI version before relying on it. |
 | Cloud sync | Real queue + drain worker. Defaults to a **local-disk adapter** (`data/cloud/`) so the whole flow runs with no credentials; swap in real S3 by setting `AWS_S3_BUCKET` (see `apps/server/.env.example`). |
 
 ## Quick start
@@ -99,28 +99,43 @@ Watch them land live on the feed. Open the QR screen and scan it (or copy
 the join URL it prints from `GET /api/session/:id/qr`) to see the guest
 gallery update in real time from a second device on the same network.
 
-## Pointing at a real Canon EOS R5
+## Pointing at a real camera
 
-Two independent ways to get shots off the camera — pick one, or run both:
+Neither path below is R5-specific — this works with any CCAPI/FTP-capable
+Canon EOS body (R5, R6/R6 Mark II, R7, R3, R8, R10, R50, 1D X Mark III, and
+others; see [Canon's developer community](https://developercommunity.usa.canon.com/s/article/Introduction-to-Camera-Control-API-CCAPI)
+for the current list). Two independent ways to get shots off the camera —
+pick one, or run both:
 
-1. **FTP (recommended to start with)** — On the R5: `Menu ▸ Network settings
-   ▸ FTP transfer ▸ FTP server`. Point it at this machine's LAN IP, port
-   `2121` (or whatever `FTP_PORT` is set to), user/pass from
-   `apps/server/.env` (`FTP_USER`/`FTP_PASS`, default `r5` / `tether`). Shoot
-   JPEG (or RAW+JPEG and let the camera send just the JPEG) — files land in
-   `data/incoming` and ingest automatically.
+1. **FTP (recommended to start with)** — On the camera: `Menu ▸ Network
+   settings ▸ FTP transfer ▸ FTP server`. Point it at this machine's LAN
+   IP, port `2121` (or whatever `FTP_PORT` is set to), user/pass from
+   `apps/server/.env` (`FTP_USER`/`FTP_PASS` — default `r5` / `tether`,
+   arbitrary example credentials, not a claim about which body you're
+   using). Shoot JPEG (or RAW+JPEG and let the camera send just the JPEG)
+   — files land in `data/incoming` and ingest automatically. **Camera
+   "connected" but nothing arrives?** That's almost always passive-mode
+   FTP announcing the wrong IP for the data connection — the server logs
+   the address it's actually announcing at startup
+   (`[ftp] passive data connections announced at …`); it needs to be an IP
+   your camera can reach, not `0.0.0.0` or `127.0.0.1`. Also check the
+   camera and this machine are on the same network with no client/AP
+   isolation (common on phone hotspots), and that your OS firewall allows
+   incoming connections to Node.
 2. **CCAPI** — for live camera status (battery, card space, serial) on the
-   Connect screen. Requires current firmware and CCAPI activated once via
-   Canon's desktop registration tool (see the "how can I make this app live"
-   answer in `chats/chat1.md` for the full rationale). Once activated, set
-   the camera's IP via `PATCH /api/session/:id` (`cameraIp`) — the connect
-   screen will start polling it.
+   Connect screen. This is status-only in this app — it does not transfer
+   photos; FTP above does that. Requires current firmware and CCAPI
+   activated once via Canon's desktop registration tool (see the "how can
+   I make this app live" answer in `chats/chat1.md` for the full
+   rationale). Once activated, set the camera's IP via
+   `PATCH /api/session/:id` (`cameraIp`) — the connect screen will start
+   polling it.
 
 Either way, guests need a network to join. `hotspot` mode assumes a travel
-router (or the R5/phone's own hotspot) that the photographer's device, the
-camera, and guests all join — no internet required, and the QR encodes the
-LAN IP. `cloud` mode assumes real internet and a real `CLOUD_BASE_URL` /
-S3 bucket for production use.
+router (or the camera/phone's own hotspot) that the photographer's device,
+the camera, and guests all join — no internet required, and the QR encodes
+the LAN IP. `cloud` mode assumes real internet and a real `CLOUD_BASE_URL`
+/ S3 bucket for production use.
 
 ## Environment variables
 

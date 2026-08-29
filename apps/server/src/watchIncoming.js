@@ -43,8 +43,8 @@ async function handleNewFile(filename) {
 
 /**
  * Watches data/incoming for new JPEGs — the drop point for both the FTP
- * server (ftpServer.js) and the simulate-camera script. Real Canon R5 FTP
- * transfer or CCAPI polling both ultimately land files here.
+ * server (ftpServer.js) and the simulate-camera script. Real FTP transfer
+ * from any supported Canon EOS body lands files here the same way.
  */
 export function startIncomingWatcher() {
   fs.mkdirSync(INCOMING_DIR, { recursive: true });

@@ -97,7 +97,7 @@ export function ConnectScreen() {
       <div style={{ border: "1px solid rgba(242,240,236,.13)", borderRadius: 14, padding: "16px 17px", background: "#131315", display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ font: "400 17px/1.2 'Helvetica Neue',Helvetica,sans-serif", color: "#F2F0EC" }}>
-            {info?.productName ?? "Canon EOS R5"}
+            {info?.productName ?? "Canon Camera"}
           </span>
           <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: meta.dot, display: "block" }} />

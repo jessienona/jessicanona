@@ -14,7 +14,7 @@ export default defineConfig({
       manifest: {
         name: "Tether — Photographer",
         short_name: "Tether",
-        description: "Live tethered capture, cull, and guest delivery for the R5.",
+        description: "Live tethered capture, cull, and guest delivery for a tethered Canon EOS camera.",
         start_url: "/connect",
         scope: "/",
         display: "standalone",
