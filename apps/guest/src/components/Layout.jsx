@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { Toast } from "./Toast.jsx";
+import { OfflineBanner } from "./OfflineBanner.jsx";
 import { useGuest } from "../context/GuestContext.jsx";
 import { capWidth, isWideRoute } from "../lib/layoutWidth.js";
 
@@ -27,6 +28,7 @@ export function Layout() {
 
   return (
     <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "#F4F1EC" }}>
+      <OfflineBanner />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", ...capWidth(wide) }}>
         <Outlet />
       </div>

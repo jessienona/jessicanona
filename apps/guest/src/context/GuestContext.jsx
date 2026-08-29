@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { useParams } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useSocket } from "../lib/useSocket.js";
+import { setGuestManifest } from "../lib/dynamicManifest.js";
+import { useInstallPrompt } from "../lib/useInstallPrompt.js";
 import { WS_EVENTS } from "@tether/shared";
 
 const GuestCtx = createContext(null);
@@ -16,6 +18,10 @@ export function GuestProvider({ children }) {
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
   const scannedRef = useRef(false);
+  // Mounted here, not inside LandingScreen, so the listener is attached
+  // for the whole app lifetime — the browser only fires
+  // `beforeinstallprompt` once, and a guest may already be past Landing.
+  const install = useInstallPrompt();
 
   const showToast = useCallback((text, tag) => {
     clearTimeout(toastTimer.current);
@@ -30,6 +36,7 @@ export function GuestProvider({ children }) {
       .then(({ session }) => {
         if (cancelled) return;
         setSession(session);
+        setGuestManifest(session);
         if (!scannedRef.current) {
           scannedRef.current = true;
           api.scan(slug).catch(() => {});
@@ -108,6 +115,7 @@ export function GuestProvider({ children }) {
         setMatchedIds,
         toast,
         showToast,
+        install,
       }}
     >
       {children}

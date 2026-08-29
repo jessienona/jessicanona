@@ -22,10 +22,46 @@ Both apps are responsive, not phone-only: content is capped and centered at
 a readable width (`packages/shared`'s `layout` tokens) rather than stretched
 edge-to-edge, and the feed/gallery grids use `auto-fill` so they pick up
 extra columns on a wider screen automatically — no separate "tablet layout"
-to maintain. They're also installable as standalone apps from iPad Safari's
-Share ▸ Add to Home Screen (icons, manifest, and `apple-mobile-web-app-*`
-meta tags are already wired up in each app's `index.html`/`public/`) — handy
-for a photographer who runs this from a mounted iPad instead of a phone.
+to maintain.
+
+## Progressive Web App
+
+Both apps are real, installable PWAs — deliberately *not* wrapped as native
+App Store apps (that path needs a Mac + Xcode + a paid Apple Developer
+account just to build, and guests scanning a QR code shouldn't have to
+install anything at all). What that gets you:
+
+- **Install, no App Store needed.** iOS Safari: Share ▸ Add to Home Screen.
+  Android/desktop Chrome/Edge: an install prompt the app itself can trigger
+  (`InstallHint`, on the photographer app's Setup screen and the guest
+  Landing screen) via the standard `beforeinstallprompt` flow, or the
+  browser's own install icon in the address bar. Installed, either app runs
+  full-screen with no browser chrome, its own icon, and its own entry in the
+  OS app switcher.
+- **The guest app's manifest is per-gallery, not per-app.** Every gallery
+  lives at its own `/g/:slug`, so there's no single fixed "app" a static
+  manifest could describe — `apps/guest/src/lib/dynamicManifest.js` builds
+  one at runtime once a session loads (name, start URL, and scope all point
+  at *that* gallery), so "Add to Home Screen" saves a shortcut straight into
+  it, not a generic empty shell.
+- **Real offline support**, via a Workbox service worker
+  (`vite-plugin-pwa`, configured in each app's `vite.config.js`): the app
+  shell precaches on install, and photo files / session data use a
+  network-first-with-cache-fallback strategy — so a photographer who's
+  already opened the feed, or a guest who's already opened the gallery, can
+  keep browsing previously-loaded photos through a signal dropout. Both
+  apps show an "OFFLINE" banner while `navigator.onLine` is false. This
+  isn't simulated — see `apps/*/src/lib/useOnlineStatus.js` and the
+  `OfflineBanner` component in each app.
+- **Production needs real HTTPS.** Install prompts and service workers only
+  activate in a "secure context" — `localhost` is exempted for dev, but a
+  real deployment needs a real TLS certificate (e.g. behind Caddy/Nginx
+  with Let's Encrypt, or a platform that terminates TLS for you) or neither
+  installability nor offline caching will work at all.
+- Run `npm run build -w apps/photographer && npm run preview -w apps/photographer`
+  (same for `apps/guest`) to test the actual production service worker
+  locally — `npm run dev` also registers one (`devOptions.enabled` in each
+  `vite.config.js`), but the preview build is the faithful one.
 
 ## What's real vs. what needs your hardware/credentials
 

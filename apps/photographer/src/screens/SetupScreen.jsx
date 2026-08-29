@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext.jsx";
 import { api } from "../lib/api.js";
 import { accent } from "@tether/shared";
+import { InstallHint } from "../components/InstallHint.jsx";
 
 const OPACITIES = [25, 45, 70];
 
@@ -154,6 +155,7 @@ function DeliveryTab({ session, stats, endSession }) {
         <Row label="Most downloaded" value={s.mostDownloaded ? `${s.mostDownloaded.filename} · ${s.mostDownloaded.downloads}` : "—"} />
         <Row label="Queued for cloud" value={s.queued > 0 ? `${s.queued.toLocaleString()} WAITING` : "NONE"} valueColor={s.queued > 0 ? accent.liveText : "rgba(242,240,236,.5)"} />
         <Row label="Devices on hotspot" value={s.devicesOnHotspot} />
+        <InstallHint />
       </div>
 
       <div
