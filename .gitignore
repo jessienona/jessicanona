@@ -1,6 +1,7 @@
 node_modules/
 apps/server/data/
 apps/*/dist/
+apps/*/dev-dist/
 .env
 *.log
 .DS_Store

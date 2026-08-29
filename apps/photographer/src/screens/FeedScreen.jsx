@@ -75,7 +75,7 @@ export function FeedScreen() {
           </div>
         ) : (
           <div style={{ height: 250, borderRadius: 10, border: "1px dashed rgba(242,240,236,.18)", display: "flex", alignItems: "center", justifyContent: "center", font: "400 12.5px/1.5 'Helvetica Neue',Helvetica,sans-serif", color: "rgba(242,240,236,.4)", textAlign: "center", padding: 20 }}>
-            Waiting on the first shot from the R5…
+            Waiting on the first shot from the camera…
           </div>
         )}
 

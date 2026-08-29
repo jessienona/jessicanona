@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { dark } from "@tether/shared";
 import { TabBar } from "./TabBar.jsx";
 import { Toast } from "./Toast.jsx";
+import { OfflineBanner } from "./OfflineBanner.jsx";
 import { useSession } from "../context/SessionContext.jsx";
 import { capWidth, isWideRoute } from "../lib/layoutWidth.js";
 
@@ -39,6 +40,7 @@ export function Layout() {
 
   return (
     <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: dark.shellBg }}>
+      <OfflineBanner />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", ...capWidth(wide) }}>
         <Outlet />
       </div>

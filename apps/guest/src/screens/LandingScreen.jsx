@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useGuest } from "../context/GuestContext.jsx";
+import { InstallHint } from "../components/InstallHint.jsx";
 
 export function LandingScreen() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export function LandingScreen() {
         >
           Find my photos
         </div>
+        <InstallHint />
       </div>
     </>
   );

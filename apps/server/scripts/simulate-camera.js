@@ -1,7 +1,7 @@
-// Simulates a Canon R5 pushing JPEGs over FTP, exactly the way the real
-// camera would once pointed at this server (Menu > Network settings > FTP
-// transfer). Exercises the real FTP server + ingest pipeline end to end —
-// nothing here talks to the ingest code directly.
+// Simulates a Canon EOS camera pushing JPEGs over FTP, exactly the way a
+// real one would once pointed at this server (Menu > Network settings >
+// FTP transfer). Exercises the real FTP server + ingest pipeline end to
+// end — nothing here talks to the ingest code directly.
 import { Client } from "basic-ftp";
 import sharp from "sharp";
 import { Readable } from "node:stream";
@@ -27,14 +27,15 @@ function hslToRgb(h, s, l) {
 
 // sharp/libvips only round-trips a small fixed set of EXIF tags — not
 // arbitrary ones like LensModel/FNumber/ExposureTime/ISO — so simulated
-// frames can't carry believable exposure data the way a real R5 JPEG does.
-// This script exists to prove the FTP → watch → ingest → DB path, not to
-// fake shot metadata; ingest.js's exifr parse handles real camera EXIF fine.
+// frames can't carry believable exposure data the way a real camera JPEG
+// does. This script exists to prove the FTP → watch → ingest → DB path,
+// not to fake shot metadata; ingest.js's exifr parse handles real camera
+// EXIF fine, whatever body it came from.
 async function makeFrame(i) {
   const { r, g, b } = hslToRgb(hueFor(i), 35, 45);
   return sharp({ create: { width: 4000, height: 6000, channels: 3, background: { r, g, b } } })
     .jpeg({ quality: 90 })
-    .withMetadata({ exif: { IFD0: { Make: "Canon", Model: "Canon EOS R5" } } })
+    .withMetadata({ exif: { IFD0: { Make: "Canon", Model: "Canon EOS Camera" } } })
     .toBuffer();
 }
 

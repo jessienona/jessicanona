@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { api } from "../lib/api.js";
 import { useSocket } from "../lib/useSocket.js";
 import { computeFaceEmbedding } from "../lib/faceEmbed.js";
+import { useInstallPrompt } from "../lib/useInstallPrompt.js";
 import { WS_EVENTS } from "@tether/shared";
 
 const SessionCtx = createContext(null);
@@ -13,6 +14,10 @@ export function SessionProvider({ children }) {
   const [stats, setStats] = useState(null);
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
+  // Mounted here (not inside the Setup screen's Delivery tab) so the
+  // `beforeinstallprompt` listener is always attached — the browser only
+  // fires it once, and a listener that isn't there yet misses it for good.
+  const install = useInstallPrompt();
 
   const showToast = useCallback((text, tag) => {
     clearTimeout(toastTimer.current);
@@ -120,7 +125,7 @@ export function SessionProvider({ children }) {
   };
 
   return (
-    <SessionCtx.Provider value={{ session, photos, cameraStatus, stats, toast, ...actions }}>
+    <SessionCtx.Provider value={{ session, photos, cameraStatus, stats, toast, install, ...actions }}>
       {children}
     </SessionCtx.Provider>
   );
